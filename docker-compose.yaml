@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  database:
+    image: postgres:15.1-alpine
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - database:/var/lib/postgresql/data
+  app:
+    build: .
+    ports: 
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - RUST_BACKTRACE=full
+      - WAIT_HOSTS=database:5432
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:${POSTGRES_PORT}/${POSTGRES_DB}
+    depends_on:
+      - database
+
+volumes:
+  database:
+    driver: local
+    

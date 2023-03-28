@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package post_api;
+
+import "google/protobuf/timestamp.proto";
+import "author.proto";
+
+service PostService {
+    rpc GetPostsByIds(GetPostsByIdsRequest) returns (GetPostsByIdsResponse) {};
+    rpc GetPostIdsOfAuthorsById(GetPostIdsOfAuthorByIdRequest) returns (GetPostIdsOfAuthorByIdResponse) {};
+}
+
+
+message GetPostsByIdsRequest {
+    repeated int64 postId = 1;
+}
+
+message GetPostsByIdsResponse {
+    repeated Post posts = 1;
+}
+
+message Post {
+    repeated author_api.Author authors = 1;
+    string body = 2;
+    google.protobuf.Timestamp created = 3;
+    int64 postId = 4;
+    string title = 5;
+    google.protobuf.Timestamp updated = 6;
+}
+
+message GetPostIdsOfAuthorByIdRequest {
+    int64 authorId = 1;
+}
+
+message GetPostIdsOfAuthorByIdResponse {
+    int64 postIds = 2;
+}
+
+
+
+

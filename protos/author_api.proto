@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package author_api;
+
+service AuthorService {
+    rpc GetAuthorsByIds (GetAuthorsByIdsRequest) returns (GetAuthorsByIdsResponse) {};
+    rpc GetAuthorIdsByEmails (GetAuthorIdsByEmailsRequest) returns (GetAuthorIdsByEmailResponse) {};
+}
+
+message GetAuthorsByIdsRequest {
+    repeated int64 authorIds = 1;
+}
+
+message GetAuthorsByIdsResponse {
+    repeated Author authors = 1;
+}
+
+message Author {
+    string userName = 1;
+    string lastName = 2;
+    string email = 3;
+}
+
+message GetAuthorIdsByEmailsRequest {
+    repeated string email = 1;
+}
+
+message GetAuthorIdsByEmailResponse {
+    repeated int64 authorIds = 1;
+}
