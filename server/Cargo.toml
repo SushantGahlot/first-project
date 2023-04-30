@@ -1,0 +1,28 @@
+[package]
+name = "server"
+version = "0.1.0"
+edition = "2021"
+build = "build.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+tonic = "0.9.1"
+prost = "0.11"
+async-trait = "0.1.68"
+prost-types = "0.11.9"
+database = { path = "../database" }
+chrono = "0.4.24"
+r2d2 = "0.8.9"
+diesel = { version = "2.0.0", features = ["postgres", "r2d2", "chrono"] }
+opentelemetry = "0.19.0"
+tokio = "1.27.0"
+opentelemetry-jaeger = { version = "0.18.0", features = ["rt-tokio"] }
+prometheus_exporter = "0.8.5"
+
+[build-dependencies]
+tonic-build = { version = "0.9.1", features = ["prost"] }
+glob = "0.3.1"
+
+[lib]
+path = "./src/traits.rs"

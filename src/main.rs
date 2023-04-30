@@ -1,8 +1,12 @@
-use database::{db::DBRepository, DatabaseRepository};
+use database::{dao::DB, DAO};
+use server::{server::GRPCServer, GRPCService};
 
-fn main() {
-    let db_repository = DBRepository{};
-    db_repository.run_migrations();
+#[tokio::main]
+async fn main() {
+    let db = DB::new();
 
-    println!("{:?}", db_repository.get_author_ids_by_email());
+    let grpc_server = GRPCServer {
+        pool: db.pool.clone(),
+    };
+    grpc_server.start().await.expect("Failed to start server");
 }

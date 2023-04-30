@@ -9,20 +9,38 @@ services:
       - "5432:5432"
     volumes:
       - database:/var/lib/postgresql/data
+    networks:
+      - local
   app:
-    build: .
+    build: 
+      context: .
     ports: 
-      - "8000:8000"
-    env_file:
-      - .env
+      - 50052:50052
+      - 9184:9184
     environment:
-      - RUST_BACKTRACE=full
       - WAIT_HOSTS=database:5432
-      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:${POSTGRES_PORT}/${POSTGRES_DB}
+      - DATABASE_URL=postgres://rust:password@database:5432/rustdb
     depends_on:
       - database
-
+    networks:
+      - local
+  # cadvisor:
+  #   image: gcr.io/cadvisor/cadvisor:v0.47.1
+  #   container_name: cadvisor-go
+  #   privileged: true
+  #   platform: "linux/amd64"
+  #   ports:
+  #     - 8080:8080
+  #   volumes:
+  #     - /:/rootfs:ro
+  #     - /var/run:/var/run:rw
+  #     - /sys:/sys:ro
+  #     - /var/lib/docker/:/var/lib/docker:ro
+  #   networks:
+  #     - rust-app
 volumes:
   database:
     driver: local
-    
+networks:
+  local:
+    name: local

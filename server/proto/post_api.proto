@@ -3,16 +3,17 @@ syntax = "proto3";
 package post_api;
 
 import "google/protobuf/timestamp.proto";
-import "author.proto";
+import "author_api.proto";
 
 service PostService {
     rpc GetPostsByIds(GetPostsByIdsRequest) returns (GetPostsByIdsResponse) {};
-    rpc GetPostIdsOfAuthorsById(GetPostIdsOfAuthorByIdRequest) returns (GetPostIdsOfAuthorByIdResponse) {};
+    rpc UpsertPost(UpsertPostRequest) returns (UpsertPostResponse) {};
 }
 
 
 message GetPostsByIdsRequest {
-    repeated int64 postId = 1;
+    repeated int32 postIds = 1;
+    string search_term = 2;
 }
 
 message GetPostsByIdsResponse {
@@ -23,19 +24,17 @@ message Post {
     repeated author_api.Author authors = 1;
     string body = 2;
     google.protobuf.Timestamp created = 3;
-    int64 postId = 4;
+    int32 postId = 4;
     string title = 5;
     google.protobuf.Timestamp updated = 6;
+    float tfidf = 7;
 }
 
-message GetPostIdsOfAuthorByIdRequest {
-    int64 authorId = 1;
+message UpsertPostRequest {
+    int32 postId = 1;
+    string title = 2;
+    string body = 3;
+    repeated int32 authorId = 4;
 }
 
-message GetPostIdsOfAuthorByIdResponse {
-    int64 postIds = 2;
-}
-
-
-
-
+message UpsertPostResponse { }

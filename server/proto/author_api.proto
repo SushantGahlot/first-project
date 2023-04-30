@@ -8,17 +8,19 @@ service AuthorService {
 }
 
 message GetAuthorsByIdsRequest {
-    repeated int64 authorIds = 1;
+    repeated int32 authorIds = 1;
 }
-
+ 
 message GetAuthorsByIdsResponse {
     repeated Author authors = 1;
 }
 
 message Author {
     string userName = 1;
-    string lastName = 2;
-    string email = 3;
+    string firstName = 2;
+    string lastName = 3;
+    string email = 4;
+    int32 authorId = 5;
 }
 
 message GetAuthorIdsByEmailsRequest {
@@ -26,5 +28,5 @@ message GetAuthorIdsByEmailsRequest {
 }
 
 message GetAuthorIdsByEmailResponse {
-    repeated int64 authorIds = 1;
+    repeated int32 authorIds = 1;
 }

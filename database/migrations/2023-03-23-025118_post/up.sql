@@ -3,5 +3,5 @@ CREATE TABLE post (
     created TIMESTAMP DEFAULT current_timestamp,
     postid SERIAL PRIMARY KEY,
     title VARCHAR NOT NULL,
-    updated TIMESTAMP
+    updated TIMESTAMP 
 );
