@@ -6,17 +6,16 @@ use crate::schema::author_post::authorid;
 use crate::schema::author_post::postid;
 use crate::schema::post;
 use crate::PostDAO;
-use diesel::pg::PgConnection;
+use async_trait::async_trait;
 use diesel::prelude::*;
-use diesel::r2d2::ConnectionManager;
 use diesel::sql_query;
 use diesel::sql_types::Array;
 use diesel::sql_types::Integer;
-use r2d2::Pool;
-use async_trait::async_trait;
+use diesel_async::pooled_connection::AsyncDieselConnectionManager;
+use diesel_async::RunQueryDsl;
 
 pub struct PostDB {
-    pub pool: Pool<ConnectionManager<PgConnection>>,
+    pub pool: bb8::Pool<AsyncDieselConnectionManager<diesel_async::AsyncPgConnection>>,
 }
 
 #[async_trait]
@@ -30,7 +29,7 @@ impl PostDAO for PostDB {
             Err("post IDs can not be empty")?;
         }
 
-        let mut conn = self.pool.get()?;
+        let mut conn = self.pool.get().await?;
 
         let query = sql_query(
             "
@@ -60,7 +59,7 @@ impl PostDAO for PostDB {
             ",
         )
         .bind::<Array<Integer>, _>(post_ids);
-        Ok(query.load(&mut conn)?)
+        Ok(query.load(&mut conn).await?)
     }
 
     async fn upsert_post(
@@ -68,7 +67,7 @@ impl PostDAO for PostDB {
         upsert_post: Post,
         author_ids: Vec<i32>,
     ) -> Result<(), Box<dyn std::error::Error>> {
-        let mut conn = self.pool.get()?;
+        let mut conn = self.pool.get().await?;
 
         // Upsert Post
         let inserted_post_id = diesel::insert_into(post::table)
@@ -77,7 +76,8 @@ impl PostDAO for PostDB {
             .do_update()
             .set(&upsert_post)
             .returning(post::postid)
-            .get_result(&mut conn)?;
+            .get_result(&mut conn)
+            .await?;
 
         if inserted_post_id == 0 {
             Err("no rows inserted")?;
@@ -94,10 +94,9 @@ impl PostDAO for PostDB {
 
         // Delete old associations
         // Test ME
-        match diesel::delete(
-            author_post::table.filter(postid.eq(inserted_post_id)),
-        )
-        .execute(&mut conn)
+        match diesel::delete(author_post::table.filter(postid.eq(inserted_post_id)))
+            .execute(&mut conn)
+            .await
         {
             Ok(_) => {}
             Err(err) => {
@@ -111,7 +110,8 @@ impl PostDAO for PostDB {
             .values(author_post)
             .on_conflict((authorid, postid))
             .do_nothing()
-            .execute(&mut conn)?;
+            .execute(&mut conn)
+            .await?;
 
         Ok(())
     }

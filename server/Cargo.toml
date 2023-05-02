@@ -13,12 +13,13 @@ async-trait = "0.1.68"
 prost-types = "0.11.9"
 database = { path = "../database" }
 chrono = "0.4.24"
-r2d2 = "0.8.9"
-diesel = { version = "2.0.0", features = ["postgres", "r2d2", "chrono"] }
+diesel = { version = "2.0.0", features = ["postgres", "chrono"] }
 opentelemetry = "0.19.0"
 tokio = "1.27.0"
 opentelemetry-jaeger = { version = "0.18.0", features = ["rt-tokio"] }
 prometheus_exporter = "0.8.5"
+bb8 = "0.8.0"
+diesel-async = { version = "0.2.1", features = ["postgres", "bb8"] }
 
 [build-dependencies]
 tonic-build = { version = "0.9.1", features = ["prost"] }

@@ -7,7 +7,6 @@ mod schema;
 use async_trait::async_trait;
 
 use dao::DB;
-use diesel::{r2d2::ConnectionManager, PgConnection};
 use models::Post;
 
 use crate::models::{Author, PostById};
@@ -15,9 +14,6 @@ use crate::models::{Author, PostById};
 #[async_trait]
 pub trait DAO {
     async fn new() -> DB;
-    async fn get_connection(
-        &self,
-    ) -> Result<r2d2::PooledConnection<ConnectionManager<PgConnection>>, r2d2::Error>;
 }
 
 #[async_trait]

@@ -43,7 +43,7 @@ impl PostService for PostAPI {
         }
 
         let posts_result = self.post_db.get_posts_by_ids(&req.get_ref().post_ids).await;
-        let mut posts: Vec<PostById> = Vec::new();
+        let posts: Vec<PostById>;
 
         match posts_result {
             Err(err) => {

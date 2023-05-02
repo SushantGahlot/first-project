@@ -1,14 +1,13 @@
 use crate::models::Author;
 use crate::schema::author::{self, authorid, email};
 use crate::AuthorDAO;
-use diesel::pg::PgConnection;
-use diesel::prelude::*;
-use diesel::r2d2::ConnectionManager;
-use r2d2::Pool;
 use async_trait::async_trait;
+use diesel::prelude::*;
+use diesel_async::pooled_connection::AsyncDieselConnectionManager;
+use diesel_async::RunQueryDsl;
 
 pub struct AuthorDB {
-    pub pool: Pool<ConnectionManager<PgConnection>>,
+    pub pool: bb8::Pool<AsyncDieselConnectionManager<diesel_async::AsyncPgConnection>>,
 }
 
 #[async_trait]
@@ -20,11 +19,12 @@ impl AuthorDAO for AuthorDB {
         if mail.len() == 0 {
             Err("author email IDs can not be empty")?;
         }
-        let mut conn = self.pool.get()?;
+        let mut conn = self.pool.get().await?;
         let results = author::table
             .select(authorid)
             .filter(email.eq_any(mail))
-            .load::<i32>(&mut conn)?;
+            .load::<i32>(&mut conn)
+            .await?;
 
         Ok(results)
     }
@@ -36,10 +36,11 @@ impl AuthorDAO for AuthorDB {
         if author_ids.len() == 0 {
             Err("author IDs can not be empty")?;
         }
-        let mut conn = self.pool.get()?;
+        let mut conn = self.pool.get().await?;
         let results = author::table
             .filter(authorid.eq_any(author_ids))
-            .load::<Author>(&mut conn)?;
+            .load::<Author>(&mut conn)
+            .await?;
 
         Ok(results)
     }
