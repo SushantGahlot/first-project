@@ -3,7 +3,7 @@ use server::{server::GRPCServer, GRPCService};
 
 #[tokio::main]
 async fn main() {
-    let db = DB::new();
+    let db = DB::new().await;
 
     let grpc_server = GRPCServer {
         pool: db.pool.clone(),

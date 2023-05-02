@@ -5,13 +5,15 @@ use diesel::pg::PgConnection;
 use diesel::prelude::*;
 use diesel::r2d2::ConnectionManager;
 use r2d2::Pool;
+use async_trait::async_trait;
 
 pub struct AuthorDB {
     pub pool: Pool<ConnectionManager<PgConnection>>,
 }
 
+#[async_trait]
 impl AuthorDAO for AuthorDB {
-    fn get_author_ids_by_email(
+    async fn get_author_ids_by_email(
         &self,
         mail: &Vec<String>,
     ) -> Result<Vec<i32>, Box<dyn std::error::Error>> {
@@ -27,7 +29,7 @@ impl AuthorDAO for AuthorDB {
         Ok(results)
     }
 
-    fn get_authors_by_ids(
+    async fn get_authors_by_ids(
         &self,
         author_ids: &Vec<i32>,
     ) -> Result<Vec<Author>, Box<dyn std::error::Error>> {

@@ -17,7 +17,6 @@ use fake::faker::lorem::en::{Paragraph, Sentence};
 use fake::faker::name::raw::{FirstName, LastName};
 use fake::locales::EN;
 use fake::Fake;
-use itertools::Itertools;
 use rand::seq::SliceRandom;
 use rand::thread_rng;
 use std::collections::HashSet;
@@ -25,10 +24,6 @@ use std::env;
 use std::time::Duration;
 
 fn establish_connection() -> PgConnection {
-    env::set_var(
-        "DATABASE_URL",
-        "postgres://rust:password@localhost:5432/rustdb",
-    );
     let database_url: String = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     let op = || PgConnection::establish(&database_url).map_err(backoff::Error::transient);
 
@@ -193,11 +188,6 @@ fn main() {
 
     conns.push(rust_db);
 
-    env::set_var(
-        "GO_DB_URL",
-        "postgres://gouser:password@localhost:5433/godatabase",
-    );
-
     let go_db_url = env::var("GO_DB_URL").unwrap_or("".to_string());
     let mut go_db_conn: PgConnection;
     if go_db_url != "" {
@@ -213,6 +203,8 @@ fn main() {
                 )
             }
         }
+    } else {
+        print!("Go DB URL not set");
     }
 
     seed_fake_data(conns);

@@ -1,5 +1,4 @@
 use std::str::FromStr;
-
 use chrono::{NaiveDateTime, Utc};
 use database::{author::AuthorDB, models::PostById, posts::PostDB, PostDAO};
 use prost_types::Timestamp;
@@ -43,7 +42,7 @@ impl PostService for PostAPI {
             ))?;
         }
 
-        let posts_result = self.post_db.get_posts_by_ids(&req.get_ref().post_ids);
+        let posts_result = self.post_db.get_posts_by_ids(&req.get_ref().post_ids).await;
         let mut posts: Vec<PostById> = Vec::new();
 
         match posts_result {
@@ -168,7 +167,7 @@ impl PostService for PostAPI {
 
         Ok(self
             .post_db
-            .upsert_post(db_post, upsert_post_request.author_id)
+            .upsert_post(db_post, upsert_post_request.author_id).await
             .map_err(|err| {
                 println!("failed upserting post. err: {:?}", err);
                 Status::new(tonic::Code::Internal, "failed upserting post")

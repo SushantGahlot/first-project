@@ -13,13 +13,16 @@ use diesel::sql_query;
 use diesel::sql_types::Array;
 use diesel::sql_types::Integer;
 use r2d2::Pool;
+use async_trait::async_trait;
 
 pub struct PostDB {
     pub pool: Pool<ConnectionManager<PgConnection>>,
 }
 
+#[async_trait]
+#[async_trait(?Send)]
 impl PostDAO for PostDB {
-    fn get_posts_by_ids(
+    async fn get_posts_by_ids(
         &self,
         post_ids: &Vec<i32>,
     ) -> Result<Vec<PostById>, Box<dyn std::error::Error>> {
@@ -60,7 +63,7 @@ impl PostDAO for PostDB {
         Ok(query.load(&mut conn)?)
     }
 
-    fn upsert_post(
+    async fn upsert_post(
         &self,
         upsert_post: Post,
         author_ids: Vec<i32>,

@@ -28,7 +28,7 @@ impl AuthorService for AuthorAPI {
             ))?;
         }
 
-        match self.author_db.get_author_ids_by_email(&req.get_ref().email) {
+        match self.author_db.get_author_ids_by_email(&req.get_ref().email).await {
             Ok(author_ids) => {
                 if author_ids.len() == 0 {
                     Err(Status::new(tonic::Code::NotFound, "authors not found"))?;
@@ -65,7 +65,7 @@ impl AuthorService for AuthorAPI {
             ))?;
         }
 
-        match self.author_db.get_authors_by_ids(&author_ids) {
+        match self.author_db.get_authors_by_ids(&author_ids).await {
             Ok(authors) => {
                 if authors.len() == 0 {
                     return Err(Status::new(tonic::Code::NotFound, "authors not found"))?;
