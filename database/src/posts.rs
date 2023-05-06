@@ -12,6 +12,7 @@ use diesel::sql_query;
 use diesel::sql_types::Array;
 use diesel::sql_types::Integer;
 use diesel_async::pooled_connection::AsyncDieselConnectionManager;
+use diesel_async::scoped_futures::ScopedFutureExt;
 use diesel_async::RunQueryDsl;
 
 pub struct PostDB {
@@ -105,13 +106,19 @@ impl PostDAO for PostDB {
             }
         }
 
-        // Update author_post table
-        diesel::insert_into(author_post::table)
-            .values(author_post)
-            .on_conflict((authorid, postid))
-            .do_nothing()
-            .execute(&mut conn)
-            .await?;
+        conn.build_transaction()
+            .run::<(), diesel::result::Error, _>(|mut c| {
+                async move {
+                    diesel::insert_into(author_post::table)
+                        .values(author_post)
+                        .on_conflict((authorid, postid))
+                        .do_nothing()
+                        .execute(&mut c)
+                        .await?;
+                    Ok(())
+                }
+                .scope_boxed()
+            }).await?;
 
         Ok(())
     }

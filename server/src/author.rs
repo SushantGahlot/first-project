@@ -16,11 +16,6 @@ impl AuthorService for AuthorAPI {
         &self,
         req: Request<GetAuthorIdsByEmailsRequest>,
     ) -> Result<Response<GetAuthorIdsByEmailResponse>, Status> {
-        println!(
-            "Got a request from {:?} to get author ids by emails",
-            req.remote_addr()
-        );
-
         if req.get_ref().email.len() == 0 {
             return Err(Status::new(
                 tonic::Code::InvalidArgument,
@@ -51,11 +46,6 @@ impl AuthorService for AuthorAPI {
         &self,
         req: Request<GetAuthorsByIdsRequest>,
     ) -> Result<Response<GetAuthorsByIdsResponse>, Status> {
-        print!(
-            "Got a request from {:?} to get authors by ids",
-            req.remote_addr()
-        );
-
         let author_ids = &req.get_ref().author_ids;
 
         if author_ids.len() == 0 {
