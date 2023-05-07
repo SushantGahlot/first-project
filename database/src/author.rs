@@ -7,7 +7,7 @@ use diesel_async::pooled_connection::AsyncDieselConnectionManager;
 use diesel_async::RunQueryDsl;
 
 pub struct AuthorDB {
-    pub pool: bb8::Pool<AsyncDieselConnectionManager<diesel_async::AsyncPgConnection>>,
+    pub pool: deadpool_diesel::Pool<AsyncDieselConnectionManager<diesel_async::AsyncPgConnection>>,
 }
 
 #[async_trait]

@@ -20,6 +20,7 @@ opentelemetry-jaeger = { version = "0.18.0", features = ["rt-tokio"] }
 prometheus_exporter = "0.8.5"
 bb8 = "0.8.0"
 diesel-async = { version = "0.2.1", features = ["postgres", "bb8"] }
+deadpool-diesel = { version = "0.4.1", features = ["postgres"] }
 
 [build-dependencies]
 tonic-build = { version = "0.9.1", features = ["prost"] }

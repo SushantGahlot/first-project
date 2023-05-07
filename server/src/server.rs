@@ -15,7 +15,7 @@ pub mod post_api {
 }
 
 pub struct GRPCServer {
-    pub pool: bb8::Pool<AsyncDieselConnectionManager<diesel_async::AsyncPgConnection>>,
+    pub pool: deadpool_diesel::Pool<AsyncDieselConnectionManager<diesel_async::AsyncPgConnection>>,
 }
 
 pub struct MetadataMap<'a> {

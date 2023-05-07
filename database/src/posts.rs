@@ -16,7 +16,7 @@ use diesel_async::scoped_futures::ScopedFutureExt;
 use diesel_async::RunQueryDsl;
 
 pub struct PostDB {
-    pub pool: bb8::Pool<AsyncDieselConnectionManager<diesel_async::AsyncPgConnection>>,
+    pub pool: deadpool_diesel::Pool<AsyncDieselConnectionManager<diesel_async::AsyncPgConnection>>,
 }
 
 #[async_trait]

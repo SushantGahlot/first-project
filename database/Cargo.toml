@@ -18,7 +18,8 @@ itertools = "0.10.5"
 rand = "0.8.5"
 async-trait = "0.1.68"
 bb8 = "0.8.0"
-diesel-async = { version = "0.2.1", features = ["postgres", "bb8"] }
+deadpool-diesel = { version = "0.4.1", features = ["postgres"] }
+diesel-async = { version = "0.2.1", features = ["postgres", "deadpool"] }
 
 [build-dependencies]
 backoff = "0.4.0"
